@@ -1,7 +1,9 @@
 // src/ml/session.ts
 import * as ort from "onnxruntime-web";
+import "onnxruntime-web/webgpu";
 
-ort.env.wasm.wasmPaths = "/";
+
+ort.env.wasm.wasmPaths = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.23.0/dist/";
 ort.env.wasm.numThreads = 1;   // evita multi-thread (precisa de cross-origin isolation)
 ort.env.wasm.proxy = false;    // roda WASM no main thread (mais simples no dev)
 

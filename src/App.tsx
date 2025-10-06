@@ -18,7 +18,7 @@ export default function App() {
     setMsg("Carregando modelo...");
     try {
       // quando criarmos a pasta, o modelo ficará em /public/models/gesture.onnx
-      const s = await createOnnxSession("/models/gesture.onnx");
+      const s = await createOnnxSession("/models/gesture.onnx");  
       setSession(s);
       setMsg(`Modelo carregado com ${s.backend.toUpperCase()}.`);
     } catch (e: any) {
