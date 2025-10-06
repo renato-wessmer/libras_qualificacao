@@ -18,7 +18,7 @@ export default function App() {
     setMsg("Carregando modelo...");
     try {
       // quando criarmos a pasta, o modelo ficará em /public/models/gesture.onnx
-      const s = await createOnnxSession("/models/gesture.onnx");  
+      const s = await createOnnxSession("https://huggingface.co/amd/squeezenet/resolve/main/SqueezeNet_int8.onnx");  
       setSession(s);
       setMsg(`Modelo carregado com ${s.backend.toUpperCase()}.`);
     } catch (e: any) {
@@ -28,17 +28,12 @@ export default function App() {
 
   async function handleTestInference() {
     if (!session) return setMsg("Carregue o modelo antes.");
-    const SEQ_LEN = 30;
-    const FEATURE_DIM = 150; // ajuste para o seu modelo real
-    const dummy = new Float32Array(SEQ_LEN * FEATURE_DIM);
-    const output = await runOnce(session, dummy, [1, SEQ_LEN, FEATURE_DIM]);
+    const shape = [1, 224, 224, 3] as const; // SqueezeNet
+    const size = shape.reduce((a, b) => a * b, 1);
+    const input = new Float32Array(size); // zeros
+    const output = await runOnce(session, input, Array.from(shape));
     const arr = (output as any).data as Float32Array | number[];
-    setMsg(
-      `Inferência OK. Saída[0..4]= ${Array.from(arr)
-        .slice(0, 5)
-        .map((n) => Number(n).toFixed(4))
-        .join(", ")}`
-    );
+    setMsg(`Inferência OK. Saída[0..4]= ${Array.from(arr).slice(0,5).map(n => Number(n).toFixed(4)).join(", ")}`);
   }
 
   return (
